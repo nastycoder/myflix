@@ -3,6 +3,33 @@ require 'spec_helper'
 describe QueueItem do
   it { should belong_to :user }
   it { should belong_to :video }
+  it { should validate_presence_of(:user) }
+  it { should validate_presence_of(:video) }
+  it { should validate_presence_of(:position) }
+
+  describe 'custom validation' do
+    it 'allows only one queued item per video' do
+      user = Fabricate(:user)
+      video = Fabricate(:video)
+      Fabricate(:queue_item, user: user, video: video)
+      queue_item = QueueItem.new(user: user, video: video)
+      expect(queue_item).not_to be_valid
+    end
+  end
+
+  describe 'before_validation' do
+    context 'new record' do
+      it 'sets the position in queue' do
+        user = Fabricate(:user)
+        video1 = Fabricate(:video)
+        video2 = Fabricate(:video)
+        queue_item1 = Fabricate(:queue_item, user: user, video: video1)
+        queue_item2 = Fabricate(:queue_item, user: user, video: video2)
+        expect(queue_item1.position).to eq(1)
+        expect(queue_item2.position).to eq(2)
+      end
+    end
+  end
 
   describe '#video_title' do
     it 'returns the title of the associated video' do
