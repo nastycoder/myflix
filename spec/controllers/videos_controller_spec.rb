@@ -1,8 +1,24 @@
 require 'spec_helper'
 
 describe VideosController do
+  describe 'GET index' do
+    context 'with authenticated user' do
+      it 'assigns @categories' do
+        session[:user] = Fabricate(:user).id
+        get :index
+        expect(assigns(:categories)).not_to be_nil
+      end
+    end
+    context 'with unauthenticated user' do
+      it 'redirects to sign in path' do
+        get :index
+        expect(response).to redirect_to(sign_in_path)
+      end
+    end
+  end
+  
   describe 'GET  show' do
-    context 'with authentucated user' do
+    context 'with authenticated user' do
       let(:user) { Fabricate(:user) }
       let(:video) { Fabricate(:video) }
 
