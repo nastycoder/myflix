@@ -8,11 +8,17 @@ class User < ActiveRecord::Base
   # Turned secure password validations off to stop the complaining about password_confirmation
   has_secure_password validations: false
 
-  def update_queue_order(batch)
-    batch.each do |key, values|
-      queue_items.find(key).update!(values)
+  def update_queue_items(batch)
+    ActiveRecord::Base.transaction do
+      begin
+        batch.each do |key, values|
+          queue_items.find(key).update!(values)
+        end
+        normalize_queue_order
+      rescue
+        raise ActiveRecord::Rollback
+      end
     end
-    normalize_queue_order
   end
 
   def normalize_queue_order
