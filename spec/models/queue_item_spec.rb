@@ -21,13 +21,22 @@ describe QueueItem do
     context 'new record' do
       it 'sets the position in queue' do
         user = Fabricate(:user)
-        video1 = Fabricate(:video)
-        video2 = Fabricate(:video)
-        queue_item1 = Fabricate(:queue_item, user: user, video: video1)
-        queue_item2 = Fabricate(:queue_item, user: user, video: video2)
+        queue_item1 = Fabricate(:queue_item, user: user)
+        queue_item2 = Fabricate(:queue_item, user: user)
         expect(queue_item1.position).to eq(1)
         expect(queue_item2.position).to eq(2)
       end
+    end
+  end
+
+  describe 'after_destroy' do
+    it 'reorders position numbers' do
+      user = Fabricate(:user)
+      queue_item1 = Fabricate(:queue_item, user: user)
+      queue_item2 = Fabricate(:queue_item, user: user)
+      queue_item3 = Fabricate(:queue_item, user: user)
+      queue_item2.destroy
+      expect(queue_item3.reload.position).to eq(2)
     end
   end
 
