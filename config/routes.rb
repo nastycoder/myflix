@@ -6,14 +6,20 @@ Myflix::Application.routes.draw do
     collection do
       get 'search' => :search
     end
+    resources :reviews, only: :create
   end
 
   resources :categories
 
   resources :users, only: :create
   resources :sessions, only: :create
+  resources :queue_items, only: [:create, :destroy]
 
   get 'ui(/:action)', controller: 'ui'
+
+  controller :queue_items do
+    get 'my_queue' => :index
+  end
 
   controller :categories do
     get 'genre' => :index

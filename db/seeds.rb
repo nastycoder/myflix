@@ -18,7 +18,6 @@ reality = Category.create(
     name: 'Reality TV'
 )
 
-
 Video.create(
     title: 'Futurama',
     description: 'Pizza boy Philip J. Fry awakens in the 31st century after 1,000 years of cryogenic preservation in this animated series. After he gets a job at an interplanetary delivery service, Fry embarks on ridiculous escapades to make sense of his predicament.',
@@ -47,3 +46,9 @@ Video.create(
     small_cover_url: '/tmp/family_guy.jpg',
     category: reality
 )
+
+User.create(full_name: 'Some One', email: 'some@one.com', password: 'password')
+
+Video.all.each do |video|
+  5.times { video.reviews.create(user: User.first, rating: (0..5).to_a.sample, content: Faker::Lorem.paragraph) }
+end

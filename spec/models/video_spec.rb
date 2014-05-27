@@ -2,6 +2,8 @@ require 'spec_helper'
 
 describe Video do
   it {should belong_to(:category)}
+  it {should have_many(:reviews).order('created_at DESC')}
+  it {should have_many(:queue_items)}
   it {should validate_presence_of(:title)}
   it {should validate_presence_of(:description)}
 
@@ -26,6 +28,13 @@ describe Video do
 
     it 'returns an empty array when given an empty string' do
       expect(Video.search_by_title('')).to eq([])
+    end
+  end
+
+  describe '#average_rating' do
+    it 'returns 0 with no reviews' do
+      video = Fabricate(:video)
+      expect(video.average_rating).to eq(0)
     end
   end
 end
