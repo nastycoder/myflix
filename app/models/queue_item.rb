@@ -2,10 +2,11 @@ class QueueItem < ActiveRecord::Base
   belongs_to :user
   belongs_to :video
 
-  before_validation :set_position, if: :new_record?
+  before_validation :set_position, if: [:new_record?, :user, :video]
   after_destroy :reorder_positions
 
   validates_presence_of :user, :video, :position
+  validates :position, numericality: { only_integer: true, greater_than: 0 }
 
   validate :only_queued_item_per_video, on: :create
 
@@ -35,8 +36,6 @@ class QueueItem < ActiveRecord::Base
     end
 
     def reorder_positions
-      user.queue_items.where('position > ?', position).each do |queue_item|
-        queue_item.update(position: (queue_item.position - 1))
-      end
+      user.normalize_queue_order
     end
 end

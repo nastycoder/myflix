@@ -6,6 +6,8 @@ describe QueueItem do
   it { should validate_presence_of(:user) }
   it { should validate_presence_of(:video) }
   it { should validate_presence_of(:position) }
+  it { should validate_numericality_of(:position).only_integer }
+  it { should_not allow_value(0).for(:position) }
 
   describe 'custom validation' do
     it 'allows only one queued item per video' do

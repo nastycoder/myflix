@@ -19,6 +19,7 @@ Myflix::Application.routes.draw do
 
   controller :queue_items do
     get 'my_queue' => :index
+    put 'queue_update' => :batch_update
   end
 
   controller :categories do
