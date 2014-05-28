@@ -9,10 +9,11 @@ describe QueueItem do
   it { should validate_numericality_of(:position).only_integer }
   it { should_not allow_value(0).for(:position) }
 
+  let(:user) { Fabricate(:user) }
+  let(:video) { Fabricate(:video) }
+
   describe 'custom validation' do
     it 'allows only one queued item per video' do
-      user = Fabricate(:user)
-      video = Fabricate(:video)
       Fabricate(:queue_item, user: user, video: video)
       queue_item = QueueItem.new(user: user, video: video)
       expect(queue_item).not_to be_valid
@@ -22,7 +23,6 @@ describe QueueItem do
   describe 'before_validation' do
     context 'new record' do
       it 'sets the position in queue' do
-        user = Fabricate(:user)
         queue_item1 = Fabricate(:queue_item, user: user)
         queue_item2 = Fabricate(:queue_item, user: user)
         expect(queue_item1.position).to eq(1)
@@ -33,7 +33,6 @@ describe QueueItem do
 
   describe 'after_destroy' do
     it 'reorders position numbers' do
-      user = Fabricate(:user)
       queue_item1 = Fabricate(:queue_item, user: user)
       queue_item2 = Fabricate(:queue_item, user: user)
       queue_item3 = Fabricate(:queue_item, user: user)
@@ -44,7 +43,6 @@ describe QueueItem do
 
   describe '#video_title' do
     it 'returns the title of the associated video' do
-      video = Fabricate(:video)
       queue_item = Fabricate(:queue_item, video: video)
       expect(queue_item.video_title).to eq(video.title)
     end
@@ -52,23 +50,17 @@ describe QueueItem do
 
   describe '#rating' do
     it 'returns the rating of the review when review present' do
-      video = Fabricate(:video)
-      user = Fabricate(:user)
       review = Fabricate(:review, user: user, video: video)
       queue_item = Fabricate(:queue_item, user: user, video: video)
       expect(queue_item.rating).to eq(review.rating)
     end
     it 'returns nil when no review if present' do
-      video = Fabricate(:video)
-      user = Fabricate(:user)
       queue_item = Fabricate(:queue_item, user: user, video: video)
       expect(queue_item.rating).to be_nil
     end
   end
 
   describe '#rating=' do
-    let(:video) { Fabricate(:video) }
-    let(:user) { Fabricate(:user) }
     let(:queue_item) { Fabricate(:queue_item, user: user, video: video) }
 
     it 'changes rating of existing review' do
