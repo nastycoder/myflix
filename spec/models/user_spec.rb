@@ -1,8 +1,9 @@
 require 'spec_helper'
 
 describe User do
-  it { should have_many(:reviews) }
+  it { should have_many(:reviews).order('created_at DESC') }
   it { should have_many(:queue_items).order('position') }
+  it { should have_many(:videos).through(:queue_items) }
 
   let(:user) { Fabricate(:user) }
 

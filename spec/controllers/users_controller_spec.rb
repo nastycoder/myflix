@@ -9,6 +9,20 @@ describe UsersController do
     end
   end
 
+  describe 'GET show' do
+    let(:user) { Fabricate(:user) }
+    before { set_current_user }
+
+    it 'assigns @user' do
+      get :show, id: user.id
+      expect(assigns(:user)).not_to be_nil
+    end
+
+    it_behaves_like('require sign in') do
+      let(:action) { get :show, id: user.id }
+    end
+  end
+
   describe 'POST create' do
     it 'created new record' do
       post :create, user: Fabricate.attributes_for(:user)

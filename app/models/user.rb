@@ -1,6 +1,7 @@
 class User < ActiveRecord::Base
   has_many :reviews, -> {order('created_at DESC')}
   has_many :queue_items, -> {order('position')}
+  has_many :videos, through: :queue_items
 
   validates_presence_of :email, :password, :full_name
   validates_uniqueness_of :email
@@ -9,7 +10,7 @@ class User < ActiveRecord::Base
   has_secure_password validations: false
 
   def queued_video?(video)
-    queue_items.map(&:video).include? video
+   videos.include? video
   end
 
   def update_queue_items(batch)
