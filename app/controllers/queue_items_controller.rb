@@ -15,4 +15,9 @@ class QueueItemsController < ApplicationController
     queue_item.destroy if current_user.queue_items.include?(queue_item)
     redirect_to my_queue_path
   end
+
+  def batch_update
+    flash.merge!(error: 'There was a problem saving changes') unless current_user.update_queue_items(params[:queue_items])
+    redirect_to my_queue_path
+  end
 end
