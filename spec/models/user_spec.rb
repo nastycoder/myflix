@@ -4,8 +4,20 @@ describe User do
   it { should have_many(:reviews) }
   it { should have_many(:queue_items).order('position') }
 
+  let(:user) { Fabricate(:user) }
+
+  describe '#queued_video?' do
+    let(:video) { Fabricate(:video) }
+    it 'returns true if user have video in queue' do
+      Fabricate(:queue_item, user: user, video: video)
+      expect(user.queued_video?(video)).to be_true
+    end
+    it 'returns false if user does not have video in queue' do
+      expect(user.queued_video?(video)).to be_false
+    end
+  end
+
   describe '#update_queue_items' do
-    let(:user) { Fabricate(:user) }
     let(:queue_item1) { Fabricate(:queue_item, user: user) }
     let(:queue_item2) { Fabricate(:queue_item, user: user) }
 

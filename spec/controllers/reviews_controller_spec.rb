@@ -3,7 +3,7 @@ require 'spec_helper'
 describe ReviewsController do
   let(:user) { current_user }
 
-  before { sign_in }
+  before { set_current_user }
 
   describe 'POST create' do
     let(:video) { Fabricate(:video) }

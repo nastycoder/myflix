@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe VideosController do
   let(:user) { current_user }
-  before { sign_in }
+  before { set_current_user }
 
   describe 'GET index' do
     it 'assigns @categories' do
@@ -13,7 +13,7 @@ describe VideosController do
       let(:action) { get :index }
     end
   end
-  
+
   describe 'GET  show' do
     let(:video) { Fabricate(:video) }
 

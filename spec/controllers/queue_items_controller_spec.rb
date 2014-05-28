@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe QueueItemsController do
   let(:user) { current_user }
-  before { sign_in }
+  before { set_current_user }
 
   describe 'GET index' do
     it 'sets @queue_items to the queue_item of the logged in user' do
