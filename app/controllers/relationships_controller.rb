@@ -13,7 +13,7 @@ class RelationshipsController < ApplicationController
 
   def create
     followed = User.find(params[:followed_id])
-    current_user.following.create(followed: followed) if current_user.can_follow?(followed)    
+    current_user.following.create(followed: followed) if current_user.can_follow?(followed)
     redirect_to people_path
   end
 end
