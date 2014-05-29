@@ -4,6 +4,8 @@ describe User do
   it { should have_many(:reviews).order('created_at DESC') }
   it { should have_many(:queue_items).order('position') }
   it { should have_many(:videos).through(:queue_items) }
+  it { should have_many(:followers) }
+  it { should have_many(:following) }
 
   let(:user) { Fabricate(:user) }
 
