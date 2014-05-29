@@ -8,6 +8,10 @@ class User < ActiveRecord::Base
   # Turned secure password validations off to stop the complaining about password_confirmation
   has_secure_password validations: false
 
+  def queued_video?(video)
+    queue_items.map(&:video).include? video
+  end
+
   def update_queue_items(batch)
     ActiveRecord::Base.transaction do
       begin
