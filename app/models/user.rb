@@ -34,4 +34,12 @@ class User < ActiveRecord::Base
       queue_item.update(position: index + 1)
     end
   end
+
+  def can_follow?(another_user)
+    !(self.follows?(another_user) || another_user == self)
+  end
+
+  def follows?(another_user)
+    following.map(&:followed).include?(another_user)
+  end
 end

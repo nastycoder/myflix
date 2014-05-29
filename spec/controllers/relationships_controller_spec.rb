@@ -7,9 +7,9 @@ describe RelationshipsController do
     it_behaves_like 'require sign in' do
       let(:action) { get :index }
     end
-    it 'assigns @followings' do
+    it 'assigns @relationships' do
       get :index
-      expect(assigns(:followings)).not_to be_nil
+      expect(assigns(:relationships)).not_to be_nil
     end
   end
 
@@ -29,6 +29,30 @@ describe RelationshipsController do
     it 'redirects to people_path' do
       delete :destroy, id: relationship.id
       expect(response).to redirect_to(people_path)
+    end
+  end
+
+  describe 'POST create' do
+    it_behaves_like 'require sign in' do
+      let(:action) { post :create, followed_id: Fabricate(:user).id }
+    end 
+    it 'saves following' do
+      post :create, followed_id: Fabricate(:user).id
+      expect(Relationship.count).to eq(1)
+    end
+    it 'redirect to people path' do
+      post :create, followed_id: Fabricate(:user).id
+      expect(response).to redirect_to(people_path)
+    end
+    it 'does not allow current user to follow the same user twice' do
+      another_user = Fabricate(:user)
+      Fabricate(:relationship, follower: current_user, followed: another_user)
+      post :create, followed_id: another_user.id
+      expect(Relationship.count).to eq(1)
+    end
+    it 'does not allow current user to follow themselves' do
+      post :create, followed_id: current_user.id
+      expect(Relationship.count).to eq(0)
     end
   end
 end

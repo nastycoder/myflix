@@ -34,4 +34,31 @@ describe User do
       expect(user.queue_items.map(&:position)).to eq([1, 2])
     end
   end
+  
+  describe '#follows?' do
+    it 'returns true if the user is following another user' do
+      another_user = Fabricate(:user)
+      Fabricate(:relationship, follower: user, followed: another_user)
+      expect(user.follows?(another_user)).to be_true
+    end
+    it 'returns false if the user is not following another user' do
+      another_user = Fabricate(:user)
+      expect(user.follows?(another_user)).to be_false
+    end
+  end
+
+  describe '#can_follow?' do
+    it 'returns false if user passed in is itself' do
+      expect(user.can_follow?(user)).to be_false
+    end
+    it 'returns false if user passed in is already being followed' do
+      another_user = Fabricate(:user)
+      Fabricate(:relationship, follower: user, followed: another_user)
+      expect(user.can_follow?(another_user)).to be_false
+    end
+    it 'returns when user passed in is not itself and not already being followed' do
+      another_user = Fabricate(:user)
+      expect(user.can_follow?(another_user)).to be_true
+    end
+  end
 end
