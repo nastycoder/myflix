@@ -14,7 +14,7 @@ Myflix::Application.routes.draw do
   resources :users, only: [:create, :show]
   resources :sessions, only: :create
   resources :queue_items, only: [:create, :destroy]
-  resources :following, only: [:destroy]
+  resources :relationships, only: [:destroy]
 
   get 'ui(/:action)', controller: 'ui'
 
@@ -35,7 +35,7 @@ Myflix::Application.routes.draw do
     get 'register' => :new
   end
 
-  controller :following do
+  controller :relationships do
     get 'people' => :index
   end
 

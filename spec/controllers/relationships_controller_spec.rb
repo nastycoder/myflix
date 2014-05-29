@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe FollowingController do
+describe RelationshipsController do
   before { set_current_user }
 
   describe 'GET index' do
@@ -14,20 +14,20 @@ describe FollowingController do
   end
 
   describe 'DELETE destroy' do
-    let(:following) { Fabricate(:following, follower: current_user) }
+    let(:relationship) { Fabricate(:relationship, follower: current_user) }
     it_behaves_like 'require sign in' do
-      let(:action) { delete :destroy, id: Fabricate(:following).id }
+      let(:action) { delete :destroy, id: Fabricate(:relationship).id }
     end
     it 'removes the following' do
-      delete :destroy, id: following.id
-      expect(Following.count).to eq(0)
+      delete :destroy, id: relationship.id
+      expect(Relationship.count).to eq(0)
     end
     it 'does not remove the following if not owned by current user' do
-      delete :destroy, id: Fabricate(:following)
-      expect(Following.count).to eq(1)
+      delete :destroy, id: Fabricate(:relationship).id
+      expect(Relationship.count).to eq(1)
     end
     it 'redirects to people_path' do
-      delete :destroy, id: following.id
+      delete :destroy, id: relationship.id
       expect(response).to redirect_to(people_path)
     end
   end
