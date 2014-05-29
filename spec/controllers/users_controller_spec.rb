@@ -36,5 +36,9 @@ describe UsersController do
       post :create, user: { full_name: 'John Doe', email: 'john_doe@example.com' }
       expect(response).to render_template :new
     end
+    it 'sends welcome email' do
+      post :create, user: { full_name: 'John Doe', email: 'john_doe@example.com' }
+      expect(ActionMailer::Base.deliveries).not_to be_empty
+    end
   end
 end

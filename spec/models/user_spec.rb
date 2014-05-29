@@ -9,6 +9,11 @@ describe User do
 
   let(:user) { Fabricate(:user) }
 
+  it 'sends welcome email when new user is created' do
+    User.create( Fabricate.attributes_for(:user) )
+    expect(ActionMailer::Base.deliveries).not_to be_empty
+  end
+
   describe '#queued_video?' do
     let(:video) { Fabricate(:video) }
     it 'returns true if user have video in queue' do
@@ -34,7 +39,7 @@ describe User do
       expect(user.queue_items.map(&:position)).to eq([1, 2])
     end
   end
-  
+
   describe '#follows?' do
     it 'returns true if the user is following another user' do
       another_user = Fabricate(:user)

@@ -6,6 +6,8 @@ class User < ActiveRecord::Base
   has_many :followers, class_name: 'Relationship', foreign_key: :followed_id
   has_many :following, class_name: 'Relationship', foreign_key: :follower_id
 
+  after_create :send_welcome_email
+
   validates_presence_of :email, :password, :full_name
   validates_uniqueness_of :email
 
@@ -42,4 +44,9 @@ class User < ActiveRecord::Base
   def follows?(another_user)
     following.map(&:followed).include?(another_user)
   end
+
+  private
+    def send_welcome_email
+      AppMailer.welcome_user(self).deliver
+    end
 end
