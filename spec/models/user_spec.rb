@@ -14,6 +14,30 @@ describe User do
     expect(ActionMailer::Base.deliveries).not_to be_empty
   end
 
+  it 'generates a random token' do
+    user = Fabricate(:user)
+    expect(user.token).not_to be_nil
+  end
+
+  describe '#forgot_password' do
+    it 'sends email' do
+      user.forgot_password
+      expect(ActionMailer::Base.deliveries).not_to be_empty
+    end
+  end
+
+  describe '#reset_password' do
+    it 'resets user token' do
+      old_token = user.token
+      user.reset_password('something_new')
+      expect(user.reload.token).not_to eq(old_token)
+    end
+    it 'changes user password' do
+      user.reset_password('something_new')
+      expect(user.authenticate('something_new')).to be_true
+    end
+  end
+
   describe '#queued_video?' do
     let(:video) { Fabricate(:video) }
     it 'returns true if user have video in queue' do

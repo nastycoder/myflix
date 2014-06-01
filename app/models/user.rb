@@ -6,6 +6,7 @@ class User < ActiveRecord::Base
   has_many :followers, class_name: 'Relationship', foreign_key: :followed_id
   has_many :following, class_name: 'Relationship', foreign_key: :follower_id
 
+  before_create :generate_token
   after_create :send_welcome_email
 
   validates_presence_of :email, :password, :full_name
@@ -45,8 +46,21 @@ class User < ActiveRecord::Base
     following.map(&:followed).include?(another_user)
   end
 
+  def forgot_password
+    AppMailer.forgot_password(self).deliver
+  end
+
+  def reset_password(new_password)
+    self.password = new_password
+    generate_token
+    self.save
+  end
+
   private
     def send_welcome_email
       AppMailer.welcome_user(self).deliver
+    end
+    def generate_token
+      self.token = SecureRandom.urlsafe_base64
     end
 end

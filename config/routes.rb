@@ -15,8 +15,19 @@ Myflix::Application.routes.draw do
   resources :sessions, only: :create
   resources :queue_items, only: [:create, :destroy]
   resources :relationships, only: [:create, :destroy]
+  resources :forgot_password, only: :create
+  resources :password_resets, only: [:show, :create]
 
   get 'ui(/:action)', controller: 'ui'
+
+  controller :password_resets do
+    get 'expired_token' => :expired_token
+  end
+
+  controller :forgot_password do
+    get 'forgot_password' => :new
+    get 'forgot_password_confirmation' => :confirm
+  end
 
   controller :queue_items do
     get 'my_queue' => :index
