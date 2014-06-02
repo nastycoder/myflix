@@ -15,6 +15,7 @@ gem 'fabrication'
 gem 'faker'
 
 group :development do
+  gem 'letter_opener'
   gem 'sqlite3'
   gem 'thin'
   gem "better_errors"
