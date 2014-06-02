@@ -15,9 +15,8 @@ describe User do
     expect(ActionMailer::Base.deliveries).not_to be_empty
   end
 
-  it 'generates a random token' do
-    user = Fabricate(:user)
-    expect(user.token).not_to be_nil
+  it_behaves_like 'token generator' do
+    let(:model) { Fabricate(:user) }
   end
 
   describe '#forgot_password' do

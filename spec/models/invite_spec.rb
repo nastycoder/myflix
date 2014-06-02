@@ -7,9 +7,8 @@ describe Invite do
   it { should validate_presence_of(:email) }
   it { should validate_presence_of(:message) }
 
-  it 'generates token' do
-    invite = Fabricate(:invite)
-    expect(invite.token).not_to be_nil
+  it_behaves_like 'token generator' do
+    let(:model) { Fabricate(:invite) }
   end
 
   it 'sends invitation email' do

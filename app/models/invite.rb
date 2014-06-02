@@ -1,7 +1,10 @@
+require 'tokenable'
+
 class Invite < ActiveRecord::Base
+  include Tokenable
+
   belongs_to :user
 
-  before_create :generate_token
   after_create :send_invitation
 
   validates_presence_of :name, :email, :message, :user
