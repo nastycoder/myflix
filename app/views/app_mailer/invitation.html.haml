@@ -1,0 +1,4 @@
+%html
+  %body
+    %p #{@invite.message}
+    %p= link_to 'Click here to join', register_from_invite_url(invite_token: @invite.token)

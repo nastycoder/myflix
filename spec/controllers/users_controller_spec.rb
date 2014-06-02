@@ -9,6 +9,28 @@ describe UsersController do
     end
   end
 
+  describe 'GET new_from_invite' do
+    it 'sets @user' do
+      invite = Fabricate(:invite)
+      get :new_from_invite, invite_token: invite.token
+      expect(assigns(:user)).not_to be_nil
+    end
+    it 'sets @invite_token' do
+      invite = Fabricate(:invite)
+      get :new_from_invite, invite_token: invite.token
+      expect(assigns(:invite_token)).not_to be_nil
+    end
+    it 'sets user email from invite' do
+      invite = Fabricate(:invite)
+      get :new_from_invite, invite_token: invite.token
+      expect(assigns(:user).email).to eq(invite.email)
+    end
+    it 'redirects to expired token page with expired token' do
+      get :new_from_invite, invite_token: 'asdfasdf'
+      expect(response).to redirect_to(expired_token_path)
+    end
+  end
+
   describe 'GET show' do
     let(:user) { Fabricate(:user) }
     before { set_current_user }
@@ -35,10 +57,6 @@ describe UsersController do
     it 'renders :new template with invalid params' do
       post :create, user: { full_name: 'John Doe', email: 'john_doe@example.com' }
       expect(response).to render_template :new
-    end
-    it 'sends welcome email' do
-      post :create, user: { full_name: 'John Doe', email: 'john_doe@example.com' }
-      expect(ActionMailer::Base.deliveries).not_to be_empty
     end
   end
 end

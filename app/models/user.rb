@@ -2,6 +2,7 @@ class User < ActiveRecord::Base
   has_many :reviews, -> {order('created_at DESC')}
   has_many :queue_items, -> {order('position')}
   has_many :videos, through: :queue_items
+  has_many :invites
 
   has_many :followers, class_name: 'Relationship', foreign_key: :followed_id
   has_many :following, class_name: 'Relationship', foreign_key: :follower_id
@@ -36,6 +37,10 @@ class User < ActiveRecord::Base
     queue_items.each_with_index do |queue_item, index|
       queue_item.update(position: index + 1)
     end
+  end
+
+  def follow(user)
+    following.create(followed: user) if can_follow?(user)
   end
 
   def can_follow?(another_user)

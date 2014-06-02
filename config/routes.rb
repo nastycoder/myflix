@@ -17,10 +17,11 @@ Myflix::Application.routes.draw do
   resources :relationships, only: [:create, :destroy]
   resources :forgot_password, only: :create
   resources :password_resets, only: [:show, :create]
+  resources :invites, only: [:new, :create]
 
   get 'ui(/:action)', controller: 'ui'
 
-  controller :password_resets do
+  controller :pages do
     get 'expired_token' => :expired_token
   end
 
@@ -44,6 +45,7 @@ Myflix::Application.routes.draw do
 
   controller :users do
     get 'register' => :new
+    get 'register/:invite_token' => :new_from_invite, as: 'register_from_invite'
   end
 
   controller :relationships do
