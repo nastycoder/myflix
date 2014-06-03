@@ -23,9 +23,9 @@ Myflix::Application.configure do
   :address        => ENV['MAILGUN_SMTP_SERVER'],
   :user_name      => ENV['MAILGUN_SMTP_LOGIN'],
   :password       => ENV['MAILGUN_SMTP_PASSWORD'],
-  :domain         => 'morning-plateau-2429.herokuapp.com',
+  :domain         => 'myflix-uriah.herokuapp.com',
   :authentication => :plain,
   }
   config.action_mailer.delivery_method = :smtp
-  config.action_mailer.default_url_options = {host: 'morning-plateau-2429.herokuapp.com' }
+  config.action_mailer.default_url_options = {host: 'myflix-uriah.herokuapp.com' }
 end
