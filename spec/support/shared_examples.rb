@@ -5,3 +5,9 @@ shared_examples 'require sign in' do
     expect(response).to redirect_to(sign_in_path)
   end
 end
+
+shared_examples 'token generator' do
+  it 'generates a random token' do
+    expect(model.token).not_to be_nil
+  end
+end

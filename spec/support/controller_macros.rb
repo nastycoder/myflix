@@ -14,6 +14,6 @@ def sign_in(user = Fabricate(:user))
   visit sign_in_path
 
   fill_in 'Email Address', with:  user.email
-  fill_in 'Password', with: user.password
+  fill_in 'Password', with: 'password'
   click_on 'Sign in'
 end

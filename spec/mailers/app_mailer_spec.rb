@@ -32,4 +32,21 @@ describe AppMailer do
       expect(mail.body.encoded).to match(user.full_name)
     end
   end
+
+  describe '#invitation' do
+    let(:invite) { Fabricate(:invite) }
+    let(:mail) { AppMailer.invitation(invite) }
+
+    it 'sets the subjet' do
+      expect(mail.subject).to eq("#{invite.user.full_name} has invited you to join MyFlix")
+    end
+
+    it 'sets the from email address' do
+      expect(mail.from).to eq(['noreply@myflix.com'])
+    end
+
+    it 'assigns @invite' do
+      expect(mail.body.encoded).to match(invite.message)
+    end
+  end
 end

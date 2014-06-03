@@ -4,6 +4,7 @@ require File.expand_path("../../config/environment", __FILE__)
 require 'rspec/rails'
 require 'rspec/autorun'
 require 'capybara/rails'
+require 'capybara/email/rspec'
 
 # Setup simplecov to track test coverage
 require 'simplecov'
@@ -44,4 +45,6 @@ RSpec.configure do |config|
   # the seed, which is printed after each run.
   #     --seed 1234
   config.order = "random"
+
+  config.before(:each) { ActionMailer::Base.deliveries.clear }
 end

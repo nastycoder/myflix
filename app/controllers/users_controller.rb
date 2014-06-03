@@ -5,10 +5,24 @@ class UsersController < ApplicationController
     @user = User.new
   end
 
+  def new_from_invite
+    invite = Invite.where(token: params[:invite_token]).first
+    if invite
+      @user = User.new(email: invite.email)
+      @invite_token = invite.token
+      render :new
+    else
+      redirect_to expired_token_path
+    end
+  end
+
   def create
     @user = User.new(user_params)
 
     if @user.save
+      if params[:invite_token]
+        Invite.where(token: params[:invite_token]).first.accepted_by(@user)
+      end
       redirect_to sign_in_path
     else
       render :new

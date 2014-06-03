@@ -6,6 +6,7 @@ describe User do
   it { should have_many(:videos).through(:queue_items) }
   it { should have_many(:followers) }
   it { should have_many(:following) }
+  it { should have_many(:invites) }
 
   let(:user) { Fabricate(:user) }
 
@@ -14,9 +15,8 @@ describe User do
     expect(ActionMailer::Base.deliveries).not_to be_empty
   end
 
-  it 'generates a random token' do
-    user = Fabricate(:user)
-    expect(user.token).not_to be_nil
+  it_behaves_like 'token generator' do
+    let(:model) { Fabricate(:user) }
   end
 
   describe '#forgot_password' do
@@ -61,6 +61,18 @@ describe User do
     it 'normalizes the position order' do
       user.update_queue_items({queue_item1.id => { position: 4 }, queue_item2.id => { position: 2 }})
       expect(user.queue_items.map(&:position)).to eq([1, 2])
+    end
+  end
+
+  describe '#follow' do
+    let(:user) { Fabricate(:user) }
+    it 'creates following user if can follow' do
+      user.follow(Fabricate(:user))
+      expect(Relationship.count).to eq(1)
+    end
+    it 'does not create following if not can following' do
+      user.follow(user)
+      expect(Relationship.count).to eq(0)
     end
   end
 

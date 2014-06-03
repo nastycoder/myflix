@@ -1,12 +1,16 @@
+require 'tokenable'
+
 class User < ActiveRecord::Base
+  include Tokenable
+
   has_many :reviews, -> {order('created_at DESC')}
   has_many :queue_items, -> {order('position')}
   has_many :videos, through: :queue_items
+  has_many :invites
 
   has_many :followers, class_name: 'Relationship', foreign_key: :followed_id
   has_many :following, class_name: 'Relationship', foreign_key: :follower_id
 
-  before_create :generate_token
   after_create :send_welcome_email
 
   validates_presence_of :email, :password, :full_name
@@ -38,6 +42,10 @@ class User < ActiveRecord::Base
     end
   end
 
+  def follow(user)
+    following.create(followed: user) if can_follow?(user)
+  end
+
   def can_follow?(another_user)
     !(self.follows?(another_user) || another_user == self)
   end
@@ -59,8 +67,5 @@ class User < ActiveRecord::Base
   private
     def send_welcome_email
       AppMailer.welcome_user(self).deliver
-    end
-    def generate_token
-      self.token = SecureRandom.urlsafe_base64
     end
 end
