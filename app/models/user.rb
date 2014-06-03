@@ -55,7 +55,7 @@ class User < ActiveRecord::Base
   end
 
   def forgot_password
-    AppMailer.forgot_password(self).deliver
+    AppMailer.delay.forgot_password(self)
   end
 
   def reset_password(new_password)
@@ -66,6 +66,6 @@ class User < ActiveRecord::Base
 
   private
     def send_welcome_email
-      AppMailer.welcome_user(self).deliver
+      AppMailer.delay.welcome_user(self)
     end
 end
