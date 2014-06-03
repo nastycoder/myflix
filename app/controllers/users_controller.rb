@@ -20,8 +20,9 @@ class UsersController < ApplicationController
     @user = User.new(user_params)
 
     if @user.save
-      if params[:invite_token]
-        Invite.where(token: params[:invite_token]).first.accepted_by(@user)
+      invite = Invite.where(token: params[:invite_token]).first
+      if invite
+        invite.accepted_by(@user)
       end
       redirect_to sign_in_path
     else
