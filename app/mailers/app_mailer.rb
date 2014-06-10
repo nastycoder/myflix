@@ -1,5 +1,5 @@
 class AppMailer < ActionMailer::Base
-  default from: "noreply@myflix.com"
+  default from: "noreply@myflix-uriah.herokuapp.com"
 
   def welcome_user(user)
     @user = user

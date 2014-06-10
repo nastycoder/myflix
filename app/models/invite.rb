@@ -25,6 +25,6 @@ class Invite < ActiveRecord::Base
     end
 
     def send_invitation
-      AppMailer.invitation(self).deliver
+      AppMailer.delay.invitation(self)
     end
 end

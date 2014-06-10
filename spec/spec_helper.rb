@@ -6,6 +6,10 @@ require 'rspec/autorun'
 require 'capybara/rails'
 require 'capybara/email/rspec'
 
+# Setup sidekiq in testing mode
+require 'sidekiq/testing'
+Sidekiq::Testing.inline!
+
 # Setup simplecov to track test coverage
 require 'simplecov'
 SimpleCov.start
@@ -46,5 +50,8 @@ RSpec.configure do |config|
   #     --seed 1234
   config.order = "random"
 
-  config.before(:each) { ActionMailer::Base.deliveries.clear }
+  config.before(:each) do
+    ActionMailer::Base.deliveries.clear
+    Sidekiq::Worker.clear_all
+  end
 end
