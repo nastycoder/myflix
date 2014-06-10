@@ -21,33 +21,28 @@ reality = Category.create(
 Video.create(
     title: 'Futurama',
     description: 'Pizza boy Philip J. Fry awakens in the 31st century after 1,000 years of cryogenic preservation in this animated series. After he gets a job at an interplanetary delivery service, Fry embarks on ridiculous escapades to make sense of his predicament.',
-    small_cover_url: '/tmp/futurama.jpg',
     category: comedy
 )
 
 Video.create(
     title: 'Monk',
     description: 'Show about an investigator',
-    small_cover_url: '/tmp/monk.jpg',
-    large_cover_url: '/tmp/monk_large.jpg',
     category: drama
 )
 
 Video.create(
     title: 'South Park',
     description: 'Crazy little cartoon kids',
-    small_cover_url: '/tmp/south_park.jpg',
     category: comedy
 )
 
 Video.create(
     title: 'Family Guy',
     description: 'Hilarious cartoon family',
-    small_cover_url: '/tmp/family_guy.jpg',
     category: reality
 )
 
-User.create(full_name: 'Some One', email: 'some@one.com', password: 'password')
+User.create(full_name: 'Some One', email: 'some@one.com', password: 'password', admin: true)
 
 Video.all.each do |video|
   5.times { video.reviews.create(user: User.first, rating: (0..5).to_a.sample, content: Faker::Lorem.paragraph) }

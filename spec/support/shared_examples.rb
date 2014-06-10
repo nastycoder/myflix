@@ -13,7 +13,6 @@ shared_examples 'token generator' do
 end
 
 shared_examples 'ensure admin' do
-  it_behaves_like('require sign in')
   it 'redirects to home path when user is not admin' do
     action
     expect(response).to redirect_to(home_path)
