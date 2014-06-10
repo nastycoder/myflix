@@ -2,6 +2,10 @@ Myflix::Application.routes.draw do
 
   root to: 'pages#front'
 
+  namespace :admin do
+    resources :videos, only: [:new, :create]
+  end
+
   resources :videos, only: :show do
     collection do
       get 'search' => :search

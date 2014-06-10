@@ -11,3 +11,11 @@ shared_examples 'token generator' do
     expect(model.token).not_to be_nil
   end
 end
+
+shared_examples 'ensure admin' do
+  it_behaves_like('require sign in')
+  it 'redirects to home path when user is not admin' do
+    action
+    expect(response).to redirect_to(home_path)
+  end
+end
