@@ -11,4 +11,4 @@
           = hidden_field_tag :invite_token, @invite_token
         %fieldset.actions.control-group.col-sm-offset-2
           .controls
-            %input(type="submit" value="Sign Up" class="btn btn-default")
+            %script(src="https://checkout.stripe.com/checkout.js" class="stripe-button" data-key="#{Rails.configuration.stripe[:publishable_key]}" data-name="MyFlix" data-amount="999")
