@@ -14,6 +14,9 @@
 /log/*.log
 /tmp
 
+# Ignore uploaded files
+public/uploads
+
 # Ignore coverage files
 /coverage
 

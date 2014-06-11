@@ -11,7 +11,7 @@ describe AppMailer do
       expect(mail.to).to eq([user.email])
     end
     it 'sets the from email address' do
-      expect(mail.from).to eq(['noreply@myflix.com'])
+      expect(mail.from).to eq(['noreply@myflix-uriah.herokuapp.com'])
     end
     it 'assigns @user' do
       expect(mail.body.encoded).to match(user.full_name)
@@ -26,7 +26,7 @@ describe AppMailer do
       expect(mail.subject).to eql("Seems you've forgotten your password")
     end
     it 'sets the from email address' do
-      expect(mail.from).to eq(['noreply@myflix.com'])
+      expect(mail.from).to eq(['noreply@myflix-uriah.herokuapp.com'])
     end
     it 'assigns @user' do
       expect(mail.body.encoded).to match(user.full_name)
@@ -42,7 +42,7 @@ describe AppMailer do
     end
 
     it 'sets the from email address' do
-      expect(mail.from).to eq(['noreply@myflix.com'])
+      expect(mail.from).to eq(['noreply@myflix-uriah.herokuapp.com'])
     end
 
     it 'assigns @invite' do
