@@ -47,26 +47,63 @@ describe UsersController do
 
   describe 'POST create' do
     let(:token) { '123' }
-    before do
-      charge = double('charge')
-      charge.stub(:successful?).and_return(true)
-      StripeWrapper::Charge.stub(:create).and_return(charge)
+    context 'with valid params' do
+      before do
+        charge = double('charge')
+        charge.stub(:successful?).and_return(true)
+        StripeWrapper::Charge.should_receive(:create).and_return(charge)
+      end
+      it 'created new record' do
+        post :create, user: Fabricate.attributes_for(:user), stripeToken: token
+        expect(User.count).to eq(1)
+      end
+      it 'redirects to sign in path' do
+        post :create, user: Fabricate.attributes_for(:user), stripeToken: token
+        expect(response).to redirect_to sign_in_path
+      end
+      it 'sets success flash' do
+        post :create, user: Fabricate.attributes_for(:user), stripeToken: token
+        expect(flash[:success]).to be_present
+      end
+      context 'with invite' do
+        it 'accepts the invite' do
+          post :create, user: Fabricate.attributes_for(:user), stripeToken: token, invite_token: Fabricate(:invite).token
+          expect(Invite.first).to be_accepted
+        end
+      end
     end
-    it 'created new record' do
-      post :create, user: Fabricate.attributes_for(:user), stripeToken: token
-      expect(User.count).to eq(1)
+    context 'with invalid user params' do
+      it 'renders :new template' do
+        post :create, user: { full_name: 'John Doe', email: 'john_doe@example.com' }, stripeToken: token
+        expect(response).to render_template :new
+      end
+      it 'sets error flash' do
+        post :create, user: { full_name: 'John Doe', email: 'john_doe@example.com' }, stripeToken: token
+        expect(flash[:error]).to be_present
+      end
+      it 'does not charge the card' do
+        expect(StripeWrapper::Charge).not_to receive(:create)
+        post :create, user: { full_name: 'John Doe', email: 'john_doe@example.com' }, stripeToken: token
+      end
     end
-    it 'redirects to sign in path with valid params' do
-      post :create, user: Fabricate.attributes_for(:user), stripeToken: token
-      expect(response).to redirect_to sign_in_path
-    end
-    it 'renders :new template with invalid params' do
-      post :create, user: { full_name: 'John Doe', email: 'john_doe@example.com' }, stripeToken: token
-      expect(response).to render_template :new
-    end
-    it 'accepts the invite with invite' do
-      post :create, user: Fabricate.attributes_for(:user), stripeToken: token, invite_token: Fabricate(:invite).token
-      expect(Invite.first).to be_accepted
+    context 'with invalid card params' do
+      before do
+        charge = double('charge')
+        charge.stub(:successful?).and_return(false)
+        charge.stub(:error_message).and_return('Your card was declined')
+        StripeWrapper::Charge.should_receive(:create).and_return(charge)
+        post :create, user: Fabricate.attributes_for(:user), stripeToken: token
+
+      end
+      it 'does not create the user' do
+        expect(User.count).to eq(0)
+      end
+      it 'renders :new tamplate' do
+        expect(response).to render_template(:new)
+      end
+      it 'sets error flash' do
+        expect(flash[:error]).to be_present
+      end
     end
   end
 end

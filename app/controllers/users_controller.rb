@@ -19,11 +19,19 @@ class UsersController < ApplicationController
   def create
     @user = User.new(user_params)
 
-    if @user.save
-      handle_invite
-      handle_charge
-      redirect_to sign_in_path
+    if @user.valid?
+      charge = handle_charge
+
+      if charge.successful?
+        @user.save
+        handle_invite
+        redirect_to sign_in_path, flash: {success: 'Thanks for joining please sign in'}
+      else
+        flash[:error] = charge.error_message
+        render :new
+      end
     else
+      flash[:error] = 'There was a problem with one or more fields'
       render :new
     end
   end
