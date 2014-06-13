@@ -7,7 +7,8 @@
         %header
           %h3
             = @video.title
-          %span Rating: #{@video.average_rating}/5.0
+          %span
+            Rating: #{@video.rating_text}
         %p
           = @video.description
         .actions
@@ -34,12 +35,12 @@
       %header
         %h3 User Reviews (#{@video.reviews.count})
       %ul
-        - @video.reviews.each do |review|
+        - @video.reviews.map(&:decorator).each do |review|
           %article.review
             %li.row
               .col-sm-2
-                %span Rating: #{review.rating} / 5
-                %p 
+                %span Rating: #{review.rating_text}
+                %p
                   by
                   = link_to review.user.full_name, review.user
               .col-sm-8
