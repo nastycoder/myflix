@@ -45,8 +45,13 @@ describe UsersController do
     end
   end
 
-  describe 'POST create', :vcr do
-    let(:token) { token_for_card(good_card) }
+  describe 'POST create' do
+    let(:token) { '123' }
+    before do
+      charge = double('charge')
+      charge.stub(:successful?).and_return(true)
+      StripeWrapper::Charge.stub(:create).and_return(charge)
+    end
     it 'created new record' do
       post :create, user: Fabricate.attributes_for(:user), stripeToken: token
       expect(User.count).to eq(1)
@@ -58,6 +63,10 @@ describe UsersController do
     it 'renders :new template with invalid params' do
       post :create, user: { full_name: 'John Doe', email: 'john_doe@example.com' }, stripeToken: token
       expect(response).to render_template :new
+    end
+    it 'accepts the invite with invite' do
+      post :create, user: Fabricate.attributes_for(:user), stripeToken: token, invite_token: Fabricate(:invite).token
+      expect(Invite.first).to be_accepted
     end
   end
 end
