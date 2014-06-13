@@ -3,7 +3,8 @@ require 'spec_helper'
 feature 'invite a friend' do
   given(:tom) { Fabricate(:user, full_name: 'Tom N. Jerry') }
   given(:friend) { {name: 'Jimmy John', email: 'wish_i_had_a_sub@sandwich.com'} }
-  scenario 'user invites a friend to myflix' do
+
+  scenario 'user invites a friend to myflix', :vcr, js: true do
     sign_in(tom)
     visit new_invite_path
     fill_in_invite_form_with(friend)
@@ -30,12 +31,17 @@ def expect_email_to_be_sent_to(email)
 end
 
 def accept_the_invite
-  current_email.click_on 'Click here to join'
+  expect(current_email).to have_content('Click here to join')
+  visit(register_from_invite_path(invite_token: Invite.first.token))
 end
 
 def fill_in_register_form_for(friend)
   fill_in 'Password', with: 'password'
   fill_in 'Full Name', with: friend[:name]
+  find('.card-number').set(good_card)
+  find('.card-cvc').set('123')
+  select '7 - July', from: 'date_month'
+  select 1.year.from_now.year, from: 'date_year'
   click_on 'Sign Up'
 end
 

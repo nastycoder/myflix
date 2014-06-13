@@ -15,6 +15,10 @@ class Invite < ActiveRecord::Base
     expire_token
   end
 
+  def accepted?
+    token.nil?
+  end
+
   private
     def expire_token
       self.token = nil

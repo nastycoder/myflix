@@ -17,6 +17,9 @@
 # Ignore uploaded files
 public/uploads
 
+# Ignore VCR files
+spec/cassettes
+
 # Ignore coverage files
 /coverage
 
