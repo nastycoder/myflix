@@ -45,9 +45,8 @@ class UsersController < ApplicationController
     end
 
     def handle_charge
-      Stripe::Charge.create(
+      StripeWrapper::Charge.create(
         amount:        999,
-        currency:     'usd',
         card:         params[:stripeToken],
         description:  "New Member charge for #{@user.email}"
       )

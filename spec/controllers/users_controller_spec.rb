@@ -45,17 +45,18 @@ describe UsersController do
     end
   end
 
-  describe 'POST create' do
+  describe 'POST create', :vcr do
+    let(:token) { token_for_card(good_card) }
     it 'created new record' do
-      post :create, user: Fabricate.attributes_for(:user)
+      post :create, user: Fabricate.attributes_for(:user), stripeToken: token
       expect(User.count).to eq(1)
     end
     it 'redirects to sign in path with valid params' do
-      post :create, user: Fabricate.attributes_for(:user)
+      post :create, user: Fabricate.attributes_for(:user), stripeToken: token
       expect(response).to redirect_to sign_in_path
     end
     it 'renders :new template with invalid params' do
-      post :create, user: { full_name: 'John Doe', email: 'john_doe@example.com' }
+      post :create, user: { full_name: 'John Doe', email: 'john_doe@example.com' }, stripeToken: token
       expect(response).to render_template :new
     end
   end
