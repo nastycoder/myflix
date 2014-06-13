@@ -20,10 +20,8 @@ class UsersController < ApplicationController
     @user = User.new(user_params)
 
     if @user.save
-      invite = Invite.where(token: params[:invite_token]).first
-      if invite
-        invite.accepted_by(@user)
-      end
+      handle_invite
+      handle_charge
       redirect_to sign_in_path
     else
       render :new
@@ -37,5 +35,21 @@ class UsersController < ApplicationController
   private
     def user_params
       params.require(:user).permit(:full_name, :email, :password)
+    end
+
+    def handle_invite
+      invite = Invite.where(token: params[:invite_token]).first
+      if invite
+        invite.accepted_by(@user)
+      end
+    end
+
+    def handle_charge
+      Stripe::Charge.create(
+        amount:        999,
+        currency:     'usd',
+        card:         params[:stripeToken],
+        description:  "New Member charge for #{@user.email}"
+      )
     end
 end
