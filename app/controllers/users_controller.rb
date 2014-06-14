@@ -18,20 +18,11 @@ class UsersController < ApplicationController
 
   def create
     @user = User.new(user_params)
-
-    if @user.valid?
-      charge = handle_charge
-
-      if charge.successful?
-        @user.save
-        handle_invite
-        redirect_to sign_in_path, flash: {success: 'Thanks for joining please sign in'}
-      else
-        flash[:error] = charge.error_message
-        render :new
-      end
+    result = UserSignup.new(@user).sign_up(params[:stripeToken], params[:invite_token])
+    if result.successful?
+      redirect_to sign_in_path, flash: {success: 'Thanks for joining please sign in'}
     else
-      flash[:error] = 'There was a problem with one or more fields'
+      flash[:error] = result.error_message
       render :new
     end
   end
@@ -43,20 +34,5 @@ class UsersController < ApplicationController
   private
     def user_params
       params.require(:user).permit(:full_name, :email, :password)
-    end
-
-    def handle_invite
-      invite = Invite.where(token: params[:invite_token]).first
-      if invite
-        invite.accepted_by(@user)
-      end
-    end
-
-    def handle_charge
-      StripeWrapper::Charge.create(
-        amount:        999,
-        card:         params[:stripeToken],
-        description:  "New Member charge for #{@user.email}"
-      )
     end
 end
