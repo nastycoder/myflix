@@ -7,16 +7,17 @@ class UserSignup
 
   def sign_up(stripe_token, invite_token)
     if @user.valid?
-      charge = handle_charge(stripe_token)
+      customer = handle_charge(stripe_token)
 
-      if charge.successful?
+      if customer.successful?
+        @user.customer_token = customer.token
         @user.save
         handle_invite(invite_token)
         @status = :success
         self
       else
         @status = :failed
-        @error_message = charge.error_message
+        @error_message = customer.error_message
         self
       end
     else

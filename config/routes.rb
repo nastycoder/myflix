@@ -4,6 +4,7 @@ Myflix::Application.routes.draw do
 
   namespace :admin do
     resources :videos, only: [:new, :create]
+    resources :payments, only: [:index]
   end
 
   resources :videos, only: :show do
@@ -60,4 +61,6 @@ Myflix::Application.routes.draw do
     get 'sign_in' => :new
     get 'sign_out' => :destroy
   end
+
+  mount StripeEvent::Engine => '/stripe_events'
 end
