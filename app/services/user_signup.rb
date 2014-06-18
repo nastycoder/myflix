@@ -43,10 +43,9 @@ class UserSignup
     end
 
     def handle_charge(stripe_token)
-      StripeWrapper::Charge.create(
-        amount:       999,
+      StripeWrapper::Customer.create(
+        email:        user.email,
         card:         stripe_token,
-        description:  "New Member charge for #{@user.email}"
       )
     end
 end
