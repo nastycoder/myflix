@@ -26,6 +26,16 @@ describe User do
     end
   end
 
+  describe '#deactivate' do
+    before { user.deactivate }
+    it 'sends deactivation notice' do
+      expect(ActionMailer::Base.deliveries).not_to be_empty
+    end
+    it 'sets active to false' do
+      expect(user.reload).not_to be_active
+    end
+  end
+
   describe '#reset_password' do
     it 'resets user token' do
       old_token = user.token
