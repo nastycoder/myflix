@@ -15,4 +15,9 @@ class AppMailer < ActionMailer::Base
     @invite = invite
     mail subject: "#{@invite.user.full_name} has invited you to join MyFlix", to: @invite.email
   end
+
+  def deactivation_notice(user)
+    @user = user
+    mail subject: 'Your Myflix account has been deactivated', to: user.email
+  end
 end

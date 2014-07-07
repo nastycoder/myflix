@@ -49,4 +49,15 @@ describe AppMailer do
       expect(mail.body.encoded).to match(invite.message)
     end
   end
+
+  describe '#deactivation_notice' do
+    let(:user) { Fabricate(:user) }
+    let(:mail) { AppMailer.deactivation_notice(user) }
+    it 'sets the subject' do
+      expect(mail.subject).to eq('Your Myflix account has been deactivated')
+    end
+    it 'assigns @user' do
+      expect(mail.body.encoded).to match(user.full_name)
+    end
+  end
 end

@@ -64,6 +64,11 @@ class User < ActiveRecord::Base
     self.save
   end
 
+  def deactivate
+    self.update_column(:active, false)
+    AppMailer.deactivation_notice(self)
+  end
+
   private
     def send_welcome_email
       AppMailer.delay.welcome_user(self)

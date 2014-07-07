@@ -8,8 +8,12 @@ class SessionsController < ApplicationController
     user = User.find_by(email: params[:email])
 
     if user.try(:authenticate, params[:password])
-      session[:user] = user.id
-      redirect_to home_path
+      if user.active
+        session[:user] = user.id
+        redirect_to home_path
+      else
+        redirect_to sign_in_path, flash: { error: 'Your account has been deactivated' }
+      end
     else
       redirect_to sign_in_path, flash: {error: 'Invalid email or password.'}
     end
